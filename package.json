@@ -1,0 +1,26 @@
+{
+    "name": "skon",
+    "displayName": "VSCode-SKON",
+    "description": "Language support for SKON - Space Kraken Object Notation.",
+    "version": "0.0.1",
+    "publisher": "SpaceKrakens",
+    "engines": {
+        "vscode": "^1.5.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "skon",
+            "aliases": ["SKON", "skon"],
+            "extensions": [".skon"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "skon",
+            "scopeName": "source.skon",
+            "path": "./syntaxes/skon.tmLanguage"
+        }]
+    }
+}
