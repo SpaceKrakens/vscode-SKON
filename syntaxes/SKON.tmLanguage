@@ -10,37 +10,46 @@
 	<key>name</key>
 	<string>SKON</string>
 
-	<key>foldingStartMarker</key>
-	<string>(?x)       # turn on extended mode
-  ^        # a line beginning with
-  \s*      # some optional space
-  [{\[]    # the start of an object or array
-  (?!      # but not followed by
-    .*     # whatever
-    [}\]]  # and the close of an object or array
-    ,?     # an optional comma
-    \s*    # some optional space
-    $      # at the end of the line
-  )
-  |        # ...or...
-  [{\[]    # the start of an object or array
-  \s*      # some optional space
-  $        # at the end of the line</string>
-	<key>foldingStopMarker</key>
-	<string>(?x)     # turn on extended mode
-  ^      # a line beginning with
-  \s*    # some optional space
-  [}\]]  # and the close of an object or array</string>
-
 	<key>patterns</key>
 	<array>
 		<dict>
 			<key>include</key>
-			<string>#value</string>
+			<string>#comments</string>			
 		</dict>
+
 		<dict>
 			<key>include</key>
-			<string>#main</string>
+			<string>#key</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\[</string>
+			<key>push</key>
+			<string>brackets</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\]</string>
+			<key>name</key>
+			<string>invalid.illegal.stray-bracket-end</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\{</string>
+			<key>push</key>
+			<string>brackets</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>\}</string>
+			<key>name</key>
+			<string>invalid.illegal.stray-bracket-end</string>
+		</dict>
+		<dict>
+			<key>match</key>
+			<string>[^\s,]</string>
+			<key>name</key>
+			<string>invalid.illegal.expected-dictionary-separator.skon</string>
 		</dict>
 	</array>
 
@@ -91,7 +100,7 @@
 
 				<dict>
 					<key>match</key>
-					<string>[^\s\,]</string>
+					<string>[^\s,]</string>
 					<key>name</key>
 					<string>invalid.illegal.expected-array-separator.skon</string>
 				</dict>
@@ -197,14 +206,33 @@
 			<key>name</key>
 			<string>constant.language.datetime.skon</string>
 		</dict>
-
-		<key>main</key>
+		<!-- definition for keys -->
+		<key>key</key>
 		<dict>
+			<key>begin</key>
+			<string>\s*(\w[\w-]+)</string>
+			<key>beginCaptures</key>
+			<dict>
+				<key>0</key>
+				<dict>
+					<key>name</key>
+					<string>entity.name.tag.toml</string>
+				</dict>
+				<key>1</key>
+				<dict>
+					<key>name</key>
+					<string>punctuation.separator.dictionary.key-value.skon</string>
+				</dict>
+			</dict>
+			<key>end</key>
+			<string>(?=(\s*[^\{]+\s*:\s*|^\s*\{?\{.*\}\}?))</string>
+			<key>name</key>
+			<string>punctuation.separator.dictionary.key.end.skon</string>
 			<key>patterns</key>
 			<array>
 				<dict>
 					<key>include</key>
-					<string>#key</string>
+					<string>#string</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -212,74 +240,20 @@
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#map</string>
+					<string>#comments</string>
 				</dict>
 				<dict>
 					<key>include</key>
-					<string>#array</string>
-				</dict>
-				<dict>
-					<key>match</key>
-					<string>\[</string>
-					<key>push</key>
-					<string>brackets</string>
-				</dict>
-				<dict>
-					<key>match</key>
-					<string>\]</string>
-					<key>name</key>
-					<string>invalid.illegal.stray-bracket-end</string>
-				</dict>
-				<dict>
-					<key>match</key>
-					<string>\{</string>
-					<key>push</key>
-					<string>brackets</string>
-				</dict>
-				<dict>
-					<key>match</key>
-					<string>\}</string>
-					<key>name</key>
-					<string>invalid.illegal.stray-bracket-end</string>
-				</dict>
-			</array>
-		</dict>
-		<!-- definition for keys -->
-		<key>key</key>
-		<dict>
-			<key>begin</key>
-			<string>/^[A-Za-z]+$/</string>
-			<key>beg</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.separator.dictionary.key-value.skon</string>
-				</dict>
-				<key>1</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.separator.dictionary.key.end.skon</string>
-				</dict>
-			</dict>
-			<key>end</key>
-			<string>:</string>
-			<key>endCaptures</key>
-			<dict>
-				<key>0</key>
-				<dict>
-					<key>name</key>
-					<string>punctuation.separator.dictionary.key.end.skon</string>
-				</dict>
-			</dict>
-			<key>name</key>
-			<string>punctuation.separator.dictionary.key.skon</string>
-			<key>patterns</key>
-			<array>
+					<string>#constant</string>
+				</dict>				
 				<dict>
 					<key>include</key>
-					<string>#stringcontent</string>
-				</dict>
+					<string>#datetime</string>
+				</dict>				
+				<dict>
+					<key>include</key>
+					<string>#number</string>
+				</dict>				
 			</array>
 		</dict>
 		<!-- definition for maps -->
@@ -352,13 +326,13 @@
 							<string>#value</string>
 						</dict>
 						<dict>
-						<key>match</key>
-						<string>[^\s,]</string>
-						<key>name</key>
-						<string>invalid.illegal.expected-dictionary-separator.skon</string>
-					</dict>
-				</array>
-			</dict>
+							<key>match</key>
+							<string>[^\s,]</string>
+							<key>name</key>
+							<string>invalid.illegal.expected-dictionary-separator.skon</string>
+						</dict>
+					</array>
+				</dict>
 				<dict>
 					<key>match</key>
 					<string>[^\s\}]</string>
