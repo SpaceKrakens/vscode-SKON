@@ -20,7 +20,7 @@
         "grammars": [{
             "language": "skon",
             "scopeName": "source.skon",
-            "path": "./syntaxes/skon.tmLanguage"
+            "path": "./syntaxes/skon.json"
         }]
     }
 }
